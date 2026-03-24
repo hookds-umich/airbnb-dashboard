@@ -72,7 +72,7 @@ fig_choropleth.update_layout(
           "<br><sup>Bubble size = number of Airbnb listings</sup>",
     title_x=0.5,
     geo=dict(scope="usa", showlakes=True, lakecolor="rgb(200, 220, 240)"),
-    height=550, margin=dict(l=0, r=0, t=60, b=0),
+    height=400, margin=dict(l=0, r=0, t=60, b=0),
 )
 
 # Build Dash App
@@ -96,10 +96,16 @@ app.layout = html.Div(style={"maxWidth": "1200px", "margin": "0 auto",
         ),
     ]),
 
-    dcc.Graph(id="bar-chart"),
-    dcc.Graph(id="scatter-chart"),
-    dcc.Graph(id="box-chart"),
-    dcc.Graph(id="choropleth", figure=fig_choropleth),
+    # Layout Adjustments, 2x2 Grid 
+    html.Div(style={"display": "flex", "gap": "10px"}, children=[
+        dcc.Graph(id="bar-chart", style={"flex": "1"}),
+        dcc.Graph(id="scatter-chart", style={"flex": "1"}),
+    ]),
+    # Row 2
+    html.Div(style={"display": "flex", "gap": "10px"}, children=[
+        dcc.Graph(id="box-chart", style={"flex": "1"}),
+        dcc.Graph(id="choropleth", figure=fig_choropleth, style={"flex": "1"}),
+    ]),
 ])
 
 
@@ -154,7 +160,7 @@ def update_charts(metric_name):
     ))
     fig_scatter.update_traces(textposition="top center",
                               selector=dict(mode="markers+text"))
-    fig_scatter.update_layout(height=500, showlegend=True, title_x=0.5)
+    fig_scatter.update_layout(height=400, showlegend=True, title_x=0.5)
 
     # Chart 3: Box
     city_order = top10.sort_values(col, ascending=False)["city"].tolist()
@@ -167,7 +173,7 @@ def update_charts(metric_name):
     )
     y_cap = top_df["monthly_revenue"].quantile(0.99)
     fig_box.update_yaxes(range=[0, y_cap * 1.05])
-    fig_box.update_layout(height=450, showlegend=False,
+    fig_box.update_layout(height=400, showlegend=False,
                           xaxis_tickangle=-45, title_x=0.5)
 
     return fig_bar, fig_scatter, fig_box
